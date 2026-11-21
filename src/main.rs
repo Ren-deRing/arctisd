@@ -2,6 +2,7 @@ mod appinfo;
 mod classify;
 mod gamedb;
 mod hid;
+mod i18n;
 mod mixer;
 mod protocol;
 mod router;
@@ -20,9 +21,9 @@ const POLL: Duration = Duration::from_secs(60);
 fn main() {
     if std::env::args().nth(1).as_deref() == Some("update-db") {
         match gamedb::update_db() {
-            Ok(n) => println!("arctisd: game DB updated ({n} executables)"),
+            Ok(n) => println!("{}", i18n::tr().f("updatedb.done", &[("n", &n.to_string())])),
             Err(e) => {
-                eprintln!("arctisd: update-db: {e}");
+                eprintln!("{}", i18n::tr().f("updatedb.failed", &[("err", &e)]));
                 std::process::exit(1);
             }
         }

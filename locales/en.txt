@@ -1,0 +1,11 @@
+# arctisd user-facing text. `key = text`; {name} is filled in at runtime.
+# Product names ("Arctis", "Arctis Nova 5X") are not translated.
+status.off = Headset off
+status.checking = Checking…
+status.battery = Battery {pct}%
+status.battery_charging = Battery {pct}% (charging)
+menu.quit = Quit
+notify.low.summary = Arctis battery low
+notify.low.body = {pct}% battery left.
+updatedb.done = Game database updated ({n} executables).
+updatedb.failed = Could not update the game database: {err}

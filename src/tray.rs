@@ -1,5 +1,6 @@
 //! KDE tray icon and low-battery notification.
 
+use crate::i18n::tr;
 use crate::state::State;
 use ksni::blocking::{Handle, TrayMethods};
 use ksni::menu::StandardItem;
@@ -38,7 +39,7 @@ impl ksni::Tray for Tray {
     fn menu(&self) -> Vec<ksni::MenuItem<Self>> {
         vec![
             StandardItem {
-                label: "종료".into(),
+                label: tr().t("menu.quit"),
                 icon_name: "application-exit".into(),
                 activate: Box::new(|_| std::process::exit(0)),
                 ..Default::default()
@@ -73,8 +74,8 @@ pub fn spawn_tray(initial: State) -> TrayHandle {
 
 pub fn notify_low(percent: u8) {
     if let Err(e) = notify_rust::Notification::new()
-        .summary("Arctis 배터리 부족")
-        .body(&format!("배터리 {percent}% 남았어요."))
+        .summary(&tr().t("notify.low.summary"))
+        .body(&tr().f("notify.low.body", &[("pct", &percent.to_string())]))
         .icon("battery-low")
         .show()
     {

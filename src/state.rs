@@ -116,11 +116,15 @@ impl State {
     }
 
     pub fn tooltip(&self) -> String {
+        self.tooltip_in(crate::i18n::tr())
+    }
+
+    pub fn tooltip_in(&self, tr: &crate::i18n::Tr) -> String {
         match (self.connected, self.battery) {
-            (false, _) => "헤드셋 꺼짐".into(),
-            (true, None) => "확인 중…".into(),
-            (true, Some(b)) if self.charging => format!("배터리 {b}% (충전 중)"),
-            (true, Some(b)) => format!("배터리 {b}%"),
+            (false, _) => tr.t("status.off"),
+            (true, None) => tr.t("status.checking"),
+            (true, Some(b)) if self.charging => tr.f("status.battery_charging", &[("pct", &b.to_string())]),
+            (true, Some(b)) => tr.f("status.battery", &[("pct", &b.to_string())]),
         }
     }
 }
@@ -128,6 +132,7 @@ impl State {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::i18n::Tr;
     use crate::protocol::Event;
 
     fn online(battery: u8) -> State {
@@ -141,7 +146,7 @@ mod tests {
         let mut s = State::default();
         let a = s.apply(Event::Status { connected: false, battery: 0, charging: false, game: 30, chat: 70 });
         assert!(a.is_empty());
-        assert_eq!(s.tooltip(), "헤드셋 꺼짐");
+        assert_eq!(s.tooltip_in(&Tr::for_lang("ko")), "헤드셋 꺼짐");
     }
 
     #[test]
@@ -191,14 +196,19 @@ mod tests {
 
     #[test]
     fn tooltip_formats() {
+        let (ko, en) = (Tr::for_lang("ko"), Tr::for_lang("en"));
         let mut s = online(85);
-        assert_eq!(s.tooltip(), "배터리 85%");
+        assert_eq!(s.tooltip_in(&ko), "배터리 85%");
+        assert_eq!(s.tooltip_in(&en), "Battery 85%");
         s.apply(Event::Charging(true));
-        assert_eq!(s.tooltip(), "배터리 85% (충전 중)");
+        assert_eq!(s.tooltip_in(&ko), "배터리 85% (충전 중)");
+        assert_eq!(s.tooltip_in(&en), "Battery 85% (charging)");
         s.apply(Event::Connected(false));
-        assert_eq!(s.tooltip(), "헤드셋 꺼짐");
+        assert_eq!(s.tooltip_in(&ko), "헤드셋 꺼짐");
+        assert_eq!(s.tooltip_in(&en), "Headset off");
         let c = State { connected: true, ..State::default() };
-        assert_eq!(c.tooltip(), "확인 중…");
+        assert_eq!(c.tooltip_in(&ko), "확인 중…");
+        assert_eq!(c.tooltip_in(&en), "Checking…");
     }
 }
 

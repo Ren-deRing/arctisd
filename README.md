@@ -61,6 +61,16 @@ Check yours with `pactl list short sinks`.
 Note that `arctisd-wireplumber.conf` turns off WirePlumber's per-app output memory for all apps,
 so that arctisd alone decides where each app goes.
 
+## Languages
+
+Tray text, notifications and `update-db` output follow your locale
+(`LANGUAGE`, then `LC_ALL` / `LC_MESSAGES` / `LANG`). English and Korean are included.
+Unsupported locales and `C` fall back to English. Log messages are always in English.
+
+To add a language, copy `locales/en.txt` to `locales/<code>.txt`, translate the text after each `=`
+(keep the `{placeholders}`), and add the file to `SUPPORTED` in `src/i18n.rs`.
+A test checks that every locale has the same keys and placeholders.
+
 ## Uninstall
 
 ```sh
