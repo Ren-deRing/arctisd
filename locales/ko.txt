@@ -1,11 +1,11 @@
-# arctisd 사용자 노출 문구. `키 = 문장`; {이름}은 실행 중에 채워져요.
-# 제품 이름("Arctis", "Arctis Nova 5X")은 번역하지 않아요.
+# arctisd 사용자 노출 문구. `키 = 문장`, {이름}은 실행 시 채워짐.
+# 제품 이름("Arctis", "Arctis Nova 5X")은 번역하지 않음.
 status.off = 헤드셋 꺼짐
 status.checking = 확인 중…
 status.battery = 배터리 {pct}%
 status.battery_charging = 배터리 {pct}% (충전 중)
 menu.quit = 종료
 notify.low.summary = Arctis 배터리 부족
-notify.low.body = 배터리 {pct}% 남았어요.
-updatedb.done = 게임 DB를 갱신했어요 (실행 파일 {n}개).
-updatedb.failed = 게임 DB를 갱신하지 못했어요: {err}
+notify.low.body = 배터리 {pct}% 남음
+updatedb.done = 게임 DB 갱신 완료 (실행 파일 {n}개)
+updatedb.failed = 게임 DB 갱신 실패: {err}
