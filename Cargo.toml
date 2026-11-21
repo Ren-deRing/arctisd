@@ -1,0 +1,16 @@
+[package]
+name = "arctisd"
+version = "0.1.0"
+edition = "2024"
+description = "Lightweight Linux daemon for SteelSeries Arctis Nova 5X: battery tray, ChatMix wheel, Game/Chat/Media routing"
+license = "0BSD"
+
+[dependencies]
+serde_json = "1"
+ksni = { version = "0.3", default-features = false, features = ["blocking", "async-io"] }
+notify-rust = { version = "4", default-features = false, features = ["z"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

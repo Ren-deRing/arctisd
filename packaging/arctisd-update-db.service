@@ -1,0 +1,8 @@
+[Unit]
+Description=Update arctisd game database
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.cargo/bin/arctisd update-db
+ExecStartPost=-/usr/bin/systemctl --user try-restart arctisd.service

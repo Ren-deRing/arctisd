@@ -1,0 +1,2 @@
+# Arctis Nova 5X dongle: let the logged-in user read/write its hidraw nodes.
+KERNEL=="hidraw*", ATTRS{idVendor}=="1038", ATTRS{idProduct}=="2253", TAG+="uaccess"
