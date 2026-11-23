@@ -4,7 +4,7 @@
 use crate::appinfo::{self, SinkInput};
 use crate::classify::{AppInfo, Channel, classify};
 use crate::gamedb;
-use crate::mixer::run_with_timeout;
+use crate::command::run_with_timeout;
 use std::collections::{HashMap, HashSet};
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};

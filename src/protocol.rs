@@ -12,8 +12,7 @@ pub const STATUS_REQUEST: [u8; 64] = {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Event {
-    Status { connected: bool, battery: u8, charging: bool, game: u8, chat: u8 },
-    ChatMix { game: u8, chat: u8 },
+    Status { connected: bool, battery: u8, charging: bool },
     Battery(u8),
     Charging(bool),
     Connected(bool),
@@ -28,14 +27,11 @@ fn pct(b: u8) -> u8 {
 
 pub fn parse(buf: &[u8]) -> Option<Event> {
     match *buf {
-        [0xB0, conn, _, bat, chg, game, chat, ..] => Some(Event::Status {
+        [0xB0, conn, _, bat, chg, ..] => Some(Event::Status {
             connected: conn == ONLINE,
             battery: pct(bat),
             charging: chg == CHARGING,
-            game: pct(game),
-            chat: pct(chat),
         }),
-        [0x45, game, chat, ..] => Some(Event::ChatMix { game: pct(game), chat: pct(chat) }),
         [0xB7, bat, ..] => Some(Event::Battery(pct(bat))),
         [0xBB, chg, ..] => Some(Event::Charging(chg == CHARGING)),
         [0xB9, conn, ..] => Some(Event::Connected(conn == ONLINE)),
@@ -58,7 +54,7 @@ mod tests {
     fn parse_status_online() {
         assert_eq!(
             parse(&[0xB0, 0x03, 0x00, 0x55, 0x01, 0x46, 0x1E]),
-            Some(Event::Status { connected: true, battery: 85, charging: true, game: 70, chat: 30 })
+            Some(Event::Status { connected: true, battery: 85, charging: true })
         );
     }
 
@@ -66,13 +62,8 @@ mod tests {
     fn parse_status_offline() {
         assert_eq!(
             parse(&[0xB0, 0x02, 0, 0, 0, 100, 100]),
-            Some(Event::Status { connected: false, battery: 0, charging: false, game: 100, chat: 100 })
+            Some(Event::Status { connected: false, battery: 0, charging: false })
         );
-    }
-
-    #[test]
-    fn parse_chatmix() {
-        assert_eq!(parse(&[0x45, 0x64, 0x00]), Some(Event::ChatMix { game: 100, chat: 0 }));
     }
 
     #[test]
@@ -88,12 +79,13 @@ mod tests {
     fn parse_rejects_short_and_unknown() {
         assert_eq!(parse(&[]), None);
         assert_eq!(parse(&[0xB0, 0x03]), None);
-        assert_eq!(parse(&[0x45]), None);
+        assert_eq!(parse(&[0xB7]), None);
+        assert_eq!(parse(&[0x45, 100, 0]), None);
         assert_eq!(parse(&[0x99, 1, 2]), None);
     }
 
     #[test]
     fn parse_clamps() {
-        assert_eq!(parse(&[0x45, 0xFF, 0x00]), Some(Event::ChatMix { game: 100, chat: 0 }));
+        assert_eq!(parse(&[0xB7, 0xFF]), Some(Event::Battery(100)));
     }
 }

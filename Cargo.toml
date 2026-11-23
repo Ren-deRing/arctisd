@@ -2,7 +2,7 @@
 name = "arctisd"
 version = "0.1.0"
 edition = "2024"
-description = "Lightweight Linux daemon for SteelSeries Arctis Nova 5X: battery tray, ChatMix wheel, Game/Chat/Media routing"
+description = "Lightweight Linux daemon for SteelSeries Arctis Nova 5X: battery tray, Game/Chat/Media routing"
 license = "0BSD"
 
 [dependencies]

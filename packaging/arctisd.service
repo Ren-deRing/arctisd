@@ -1,7 +1,7 @@
 [Unit]
-Description=Arctis Nova 5X battery tray and ChatMix
+Description=Arctis Nova 5X battery tray and app routing
 After=pipewire.service pipewire-pulse.service graphical-session.target
-# Restart with PipeWire so the wheel mix is re-applied to the new loopback streams.
+# Restart together with PipeWire.
 PartOf=graphical-session.target pipewire.service pipewire-pulse.service
 
 [Service]

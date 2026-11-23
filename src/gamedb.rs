@@ -98,7 +98,7 @@ pub fn in_db(names: &[String]) -> bool {
 
 /// Download detectable.json and rewrite the sorted list. Returns the entry count.
 pub fn update_db() -> Result<usize, String> {
-    let json = crate::mixer::run_with_timeout(
+    let json = crate::command::run_with_timeout(
         Command::new("curl").args(["-fsSL", "--max-time", "30", DB_URL]),
         Duration::from_secs(35),
     )?;

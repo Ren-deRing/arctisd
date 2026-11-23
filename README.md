@@ -4,9 +4,8 @@ A small Linux daemon for the **SteelSeries Arctis Nova 5X** (USB dongle `1038:22
 replacing what SteelSeries GG / Sonar does on Windows:
 
 - **Battery** in the system tray (StatusNotifierItem), with low-battery notifications at 20% and 10%.
-- **ChatMix wheel**: the headset wheel balances two virtual inputs, *Arctis Game* and *Arctis Chat*.
-  A third input, *Arctis Media*, is not affected by the wheel.
-- **Automatic app routing**: new audio streams are sent to Game, Chat or Media.
+- **Automatic app routing**: new audio streams are sent to one of three virtual inputs,
+  *Arctis Game*, *Arctis Chat* or *Arctis Media*.
   If you move an app yourself, that choice is remembered and takes priority.
 
 It is written in Rust with no async runtime and uses about 5 MB RSS.
@@ -93,7 +92,7 @@ Interface 5 pushes events:
 
 | Event | Meaning |
 |---|---|
-| `45 <game> <chat>` | ChatMix wheel moved |
+| `45 <game> <chat>` | ChatMix wheel moved (ignored by arctisd) |
 | `b7 <battery>` | Battery level changed |
 | `bb <charging>` | Charging state changed |
 | `b9 <conn>` | Headset connected or disconnected |

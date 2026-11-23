@@ -90,7 +90,7 @@ mod tests {
 
     fn st(connected: bool, battery: u8, charging: bool) -> State {
         let mut s = State::default();
-        s.apply(Event::Status { connected, battery, charging, game: 100, chat: 100 });
+        s.apply(Event::Status { connected, battery, charging });
         s
     }
 

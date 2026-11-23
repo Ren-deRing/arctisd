@@ -1,21 +1,19 @@
 mod appinfo;
 mod classify;
+mod command;
 mod gamedb;
 mod hid;
 mod i18n;
-mod mixer;
 mod protocol;
 mod router;
 mod state;
 mod tray;
 
-use mixer::{Mixer, Pactl};
 use state::{Action, State};
-use std::sync::mpsc::{self, RecvTimeoutError};
+use std::sync::mpsc;
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
-const DEBOUNCE: Duration = Duration::from_millis(50);
 const POLL: Duration = Duration::from_secs(60);
 
 fn main() {
@@ -42,30 +40,17 @@ fn main() {
     });
 
     let mut state = State::default();
-    let mut mixer = Mixer::new(Pactl::default(), DEBOUNCE);
     let tray = tray::spawn_tray(state.clone());
 
-    loop {
-        let timeout = mixer
-            .next_deadline()
-            .map(|d| d.saturating_duration_since(Instant::now()))
-            .unwrap_or(POLL);
-        match rx.recv_timeout(timeout) {
-            Ok(ev) => {
-                if state.needs_status(&ev) {
-                    let _ = hid::request_status();
-                }
-                for action in state.apply(ev) {
-                    match action {
-                        Action::SetMix { game, chat } => mixer.submit(game, chat, Instant::now()),
-                        Action::Alert(p) => tray::notify_low(p),
-                    }
-                }
-                tray.update(state.clone());
-            }
-            Err(RecvTimeoutError::Timeout) => {}
-            Err(RecvTimeoutError::Disconnected) => break,
+    for ev in rx {
+        if state.needs_status(&ev) {
+            let _ = hid::request_status();
         }
-        mixer.flush(Instant::now());
+        for action in state.apply(ev) {
+            match action {
+                Action::Alert(p) => tray::notify_low(p),
+            }
+        }
+        tray.update(state.clone());
     }
 }
